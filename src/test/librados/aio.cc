@@ -2208,9 +2208,14 @@ TEST(LibRadosAioEC, RoundTripAppend) {
   ASSERT_EQ("", test_data.init());
   ASSERT_EQ(0, rados_aio_create_completion((void*)&test_data,
 	      set_completion_completeEC, set_completion_safeEC, &my_completion));
-  ASSERT_TRUE(rados_ioctx_pool_requires_alignment(test_data.m_ioctx));
-  uint64_t alignment = rados_ioctx_pool_required_alignment(test_data.m_ioctx);
-  ASSERT_NE((unsigned)0, alignment);
+  int requires;
+  int r = rados_ioctx_pool_requires_alignment2(test_data.m_ioctx, &requires);
+  ASSERT_EQ(0, r);	
+  ASSERT_NE(0, requires);
+  uint64_t alignment;
+  r = rados_ioctx_pool_required_alignment2(test_data.m_ioctx, &alignment);
+  ASSERT_EQ(0, r);
+  ASSERT_NE((unsigned)0, alignment); 
 
   int bsize = alignment;
   char *buf = (char *)new char[bsize];
@@ -2276,8 +2281,13 @@ TEST(LibRadosAioEC, RoundTripAppendPP) {
 	  (void*)&test_data, set_completion_completeEC, set_completion_safeEC);
   AioCompletion *my_completion_null = NULL;
   ASSERT_NE(my_completion, my_completion_null);
-  ASSERT_TRUE(test_data.m_ioctx.pool_requires_alignment());
-  uint64_t alignment = test_data.m_ioctx.pool_required_alignment();
+  bool requires;
+  int r = test_data.m_ioctx.pool_requires_alignment2(&requires);
+  ASSERT_EQ(0, r);
+  ASSERT_TRUE(requires);
+  uint64_t alignment;
+  r = test_data.m_ioctx.pool_required_alignment2(&alignment);
+  ASSERT_EQ(0, r);
   ASSERT_NE((unsigned)0, alignment);
   int bsize = alignment;
   char *buf = (char *)new char[bsize];
