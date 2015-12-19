@@ -25,7 +25,7 @@
 
 class AsyncCompressor {
  private:
-  CompressorRef compressor;
+  Compressor *compressor;
   CephContext *cct;
   atomic_t job_id;
   vector<int> coreids;

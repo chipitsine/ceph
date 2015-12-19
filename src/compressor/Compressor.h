@@ -18,19 +18,13 @@
 #include "include/int_types.h"
 #include "include/Context.h"
 
-class Compressor;
-typedef shared_ptr<Compressor> CompressorRef;
-
-
 class Compressor {
  public:
   virtual ~Compressor() {}
   virtual int compress(bufferlist &in, bufferlist &out) = 0;
   virtual int decompress(bufferlist &in, bufferlist &out) = 0;
 
-  static CompressorRef create(CephContext *cct, const string &type);
+  static Compressor *create(const string &type);
 };
-
-
 
 #endif
