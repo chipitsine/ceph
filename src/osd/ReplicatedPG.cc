@@ -9634,6 +9634,8 @@ void ReplicatedPG::on_shutdown()
   deleting = true;
 
   clear_scrub_reserved();
+  scrub_clear_state();
+
   unreg_next_scrub();
   cancel_copy_ops(false);
   cancel_flush_ops(false);
